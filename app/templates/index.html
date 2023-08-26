@@ -3,8 +3,8 @@
 <head>
 
     <!-- meta tag for LinkedIn -->
-    <meta name="image" property="og:image" content="https://project-manager.ai/static/images/project-manager.png">
-    <meta property="og:image:secure_url" content="https://project-manager.ai/static/images/project-manager.png">
+    <meta name="image" property="og:image" content="static/images/codellama-7b.png">
+    <meta property="og:image:secure_url" content="static/images/codellama-7b.png">
     <meta property="og:image:type" content="image/png">
     <meta property="og:image:width" content="1200">
     <meta property="og:image:height" content="630">
@@ -25,12 +25,12 @@
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="project-manager.ai">
     <meta name="twitter:description" content="Managing your AI projects successfully">
-    <meta name="twitter:image" content="https://project-manager.ai/static/images/project-manager.png">
+    <meta name="twitter:image" content="static/images/codellama-7b.png">
 
     <meta name="msapplication-TileColor" content="#ffffff">
-    <meta name="msapplication-TileImage" content="https://project-manager.ai/static/images/project-manager.png">
+    <meta name="msapplication-TileImage" content="static/images/codellama-7b.png">
 
-    <title>llama-2-7b demo</title>
+    <title>Code Llama 7B Demo</title>
 
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
@@ -51,11 +51,11 @@
     <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
 
     <!-- Favicon -->
-    <link rel="apple-touch-icon" sizes="180x180" href="static/images/project-manager-favicon/apple-touch-icon.png">
-    <link rel="icon" type="image/png" sizes="32x32" href="static/images/project-manager-favicon/favicon-32x32.png">
-    <link rel="icon" type="image/png" sizes="16x16" href="static/images/project-manager-favicon/favicon-16x16.png">
-    <link rel="manifest" href="static/images/project-manager-favicon/site.webmanifest">
-    <link rel="shortcut icon" type="image/x-icon" href="static/images/project-manager-favicon/favicon.ico">
+    <link rel="apple-touch-icon" sizes="180x180" href="static/images/codellama-7b-favicon/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="static/images/codellama-7b-favicon/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="static/images/codellama-7b-favicon/favicon-16x16.png">
+    <link rel="manifest" href="static/images/codellama-7b-favicon/site.webmanifest">
+    <link rel="shortcut icon" type="image/x-icon" href="static/images/codellama-7b-favicon/favicon.ico">
     <a href="https://project-manager.ai/"><img src="https://project-manager.ai/static/images/project-manager-favicon/favicon.ico" alt="Favicon" style="display:none;"></a>
 
     <!-- Custom CSS -->
@@ -75,17 +75,17 @@
         <!-- chat menu -->
         <div class="chat-menu">
             <!-- <button class="btn btn-custom mb-3 btn-lg btn-block">New Project</button> -->
-            <label for="modalities" class="form-label mb-2">Select an internal or external AI due diligence assistant:</label>
+            <label for="modalities" class="form-label mb-2">Select model:</label>
             
             <!-- Modality selection, simply add a new button and define the model to create a new modality, then create a new completion for it -->
             <form id="modality-form">
                 <div id="modalities">
                     <input type="hidden" name="modality" id="modality" value="llama-2-7b">
-                    <button type="button" class="btn btn-outline-custom mb-2 btn-block" data-value="gpt-4">External | gpt-4-0613</button>
-                    <button type="button" class="btn btn-outline-primary mb-2 btn-block" data-value="llama-2-7b">Internal | llama-2-7b</button>
+                    <button type="button" class="btn btn-outline-custom mb-2 btn-block" data-value="gpt-4">gpt-4-0613</button>
+                    <p class="text-muted">OpenAI's GPT-4 <a href="https://platform.openai.com/docs/models/gpt-4" target="_blank">documentation</a>.</p>
+                    <button type="button" class="btn btn-outline-primary mb-2 btn-block" data-value="llama-2-7b">codellama-7b</button>
+                    <p class="text-muted">Meta's Code llama <a href="https://github.com/facebookresearch/codellama" target="_blank">github</a> and <a href="https://ai.meta.com/research/publications/code-llama-open-foundation-models-for-code/" target="_blank">paper</a>.</p>
                 </div>
-                <p class="text-muted">You can switch between assistants at any time. Internal assistants are are fine-tuned GPT models that are used within an organization, such as Falcon and Llama-2. These models are not accessible through a public API service and are used for specific internal purposes. On the other hand, external GPT models are accessed through a public API service, such as ChatGPT, Claude-2, or Bard. These models are designed for general use and can be accessed by anyone with an internet connection.</p>
-                <p class="text-muted">The main purpose of deriving a distinction between internal and external GPT models is information security. Internal GPT models are used within an organization and are not accessible to the public, which means that they are less vulnerable. External GPT models, on the other hand, are accessible to the public, which makes them more vulnerable, for example to cyber attacks.</p>
             </form>
         </div>
             
