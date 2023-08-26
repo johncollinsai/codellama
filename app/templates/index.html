@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+    <!-- meta tag for LinkedIn -->
+    <meta name="image" property="og:image" content="https://project-manager.ai/static/images/project-manager.png">
+    <meta property="og:image:secure_url" content="https://project-manager.ai/static/images/project-manager.png">
+    <meta property="og:image:type" content="image/png">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <meta name="title" content="project-manager.ai">
+    <meta name="description" content="Managing your AI projects successfully">
+
+    <meta property="og:title" content="project-manager.ai">
+    <meta property="og:description" content="Managing your AI projects successfully">
+    <meta property="og:url" content="https://project-manager.ai/">
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="Project Manager AI">
+
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="project-manager.ai">
+    <meta name="twitter:description" content="Managing your AI projects successfully">
+    <meta name="twitter:image" content="https://project-manager.ai/static/images/project-manager.png">
+
+    <meta name="msapplication-TileColor" content="#ffffff">
+    <meta name="msapplication-TileImage" content="https://project-manager.ai/static/images/project-manager.png">
+
+    <title>llama-2-7b demo</title>
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css?family=Quicksand" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.14.0/css/all.css" integrity="sha384-HzLeBuhoNPvSl5KYnjx0BT+WB0QEEqLprO+NBkkk5gbc67FTaL7XIGa2w1L0Xbgc" crossorigin="anonymous">
+
+    <!-- JavaScript -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+
+    <!-- Favicon -->
+    <link rel="apple-touch-icon" sizes="180x180" href="static/images/project-manager-favicon/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="static/images/project-manager-favicon/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="static/images/project-manager-favicon/favicon-16x16.png">
+    <link rel="manifest" href="static/images/project-manager-favicon/site.webmanifest">
+    <link rel="shortcut icon" type="image/x-icon" href="static/images/project-manager-favicon/favicon.ico">
+    <a href="https://project-manager.ai/"><img src="https://project-manager.ai/static/images/project-manager-favicon/favicon.ico" alt="Favicon" style="display:none;"></a>
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="/static/css/style.css">
+
+    <!-- Error handling and custom scripts -->
+    <script src="/static/js/errorHandling.js"></script>
+    <script src="/static/js/scripts.js"></script>
+
+</head>
+
+<body>
+
+    <!-- chat-interface -->
+    <div class="container-fluid chat-interface">
+
+        <!-- chat menu -->
+        <div class="chat-menu">
+            <!-- <button class="btn btn-custom mb-3 btn-lg btn-block">New Project</button> -->
+            <label for="modalities" class="form-label mb-2">Select an internal or external AI due diligence assistant:</label>
+            
+            <!-- Modality selection, simply add a new button and define the model to create a new modality, then create a new completion for it -->
+            <form id="modality-form">
+                <div id="modalities">
+                    <input type="hidden" name="modality" id="modality" value="llama-2-7b">
+                    <button type="button" class="btn btn-outline-custom mb-2 btn-block" data-value="gpt-4">External | gpt-4-0613</button>
+                    <button type="button" class="btn btn-outline-primary mb-2 btn-block" data-value="llama-2-7b">Internal | llama-2-7b</button>
+                </div>
+                <p class="text-muted">You can switch between assistants at any time. Internal assistants are are fine-tuned GPT models that are used within an organization, such as Falcon and Llama-2. These models are not accessible through a public API service and are used for specific internal purposes. On the other hand, external GPT models are accessed through a public API service, such as ChatGPT, Claude-2, or Bard. These models are designed for general use and can be accessed by anyone with an internet connection.</p>
+                <p class="text-muted">The main purpose of deriving a distinction between internal and external GPT models is information security. Internal GPT models are used within an organization and are not accessible to the public, which means that they are less vulnerable. External GPT models, on the other hand, are accessible to the public, which makes them more vulnerable, for example to cyber attacks.</p>
+            </form>
+        </div>
+            
+        <!-- The active chat conversation -->
+        <div class="chat-area">
+            <div class="container text-white chat-container">
+                <div id="result" class="mt-4 text-muted"></div>
+            </div>
+            <form id="prompt-form" class="prompt-form">
+                <div class="mb-3">
+                    <div class="position-relative">
+                        <!-- wrap the input-spinner-wrapper with a div using Bootstrap grid classes -->
+                        <div class="row justify-content-center">
+                            <div class="col-lg-8"> <!-- This class will make the width of the child 2/3 in large screens -->
+                                <div class="input-spinner-wrapper">
+                                    <div class="text-area-wrapper">
+                                        <textarea class="form-control" id="prompt" name="prompt" placeholder="Enter company name ..." required></textarea>
+                                        <!-- The button is now inside the .text-area-wrapper element -->
+                                        <button type="submit" class="btn btn-primary submit-button circle-btn"><i class="fas fa-arrow-right"></i></button>
+                                    </div>
+                                    <div class="spinner">
+                                        <div class="dot dot-1"></div>
+                                        <div class="dot dot-2"></div>
+                                        <div class="dot dot-3"></div>
+                                        <div class="dot dot-4"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </form>                    
+        </div>
+
+    </div>
+
+    <!-- Skeleton Screen -->
+    <div id="skeleton-screen" class="skeleton-screen d-none">
+        <div id="spinner-container">
+            <div class="spinner">
+                <div class="dot dot-1"></div>
+                <div class="dot dot-2"></div>
+                <div class="dot dot-3"></div>
+                <div class="dot dot-4"></div>
+            </div>
+            <div class="spinner-text">Responding ...</div>
+        </div>
+    </div>
+
+</body>
+
+</html>
+
+                           
