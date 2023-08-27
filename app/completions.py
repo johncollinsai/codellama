@@ -7,8 +7,8 @@ import fire
 import torch
 import torch.multiprocessing as mp
 from torch.nn.parallel import DistributedDataParallel as DDP
-from .validatename import validate_company_name_gpt
-from .prompts import INTRO_SENTENCE, USER_PROMPT, USER_PROMPT_LLAMA
+from .validatecode import validate_code
+from .prompts import USER_PROMPT, USER_PROMPT_LLAMA
 from llama import Llama
 
 def get_api_key():
@@ -34,8 +34,8 @@ def generate_gpt4_response(
         api_key, 
         ckpt_dir, 
         tokenizer_path, 
-        max_seq_len=100, # max length of the input sequence, set to 25 because llama-2-7b seems to work in simple Q&A fashion
-        max_gen_len=1500, # max length of the generated sequence, set to 1500 as kind of comparable to 1500 for gpt-4 max_tokens
+        max_seq_len=1500, # max length of the input sequence
+        max_gen_len=None, # Optional
         max_batch_size=4, 
         temperature=0, # 0 implies models will always pick the most likely next word, ignoring top_p re llama-2, aligns with gpt-4
         top_p=0.9 # overridden here by temperature=0, aligns with gpt-4
@@ -44,13 +44,12 @@ def generate_gpt4_response(
         print("Prompt: ", prompt)   # print prompt
         print("Modality: ", modality)   # print api key
 
-        is_valid = validate_company_name_gpt(prompt, modality, api_key)
+        is_valid = validate_code(prompt, modality, api_key, max_seq_len)
         
         if not is_valid:
-            raise ValueError(f"Invalid company name: {prompt}")
+            raise ValueError(f"Invalid code: {prompt}")
         
-        intro_sentence = INTRO_SENTENCE.format(modality=modality, prompt=prompt)
-        user_prompt = USER_PROMPT.format(modality=modality, prompt=prompt, intro_sentence=intro_sentence)
+        user_prompt = USER_PROMPT.format(modality=modality, prompt=prompt)
         user_prompt_llama = USER_PROMPT_LLAMA.format(prompt=prompt)
         
         openai.api_key = api_key
@@ -60,10 +59,9 @@ def generate_gpt4_response(
                 return openai.ChatCompletion.create(
                     model="gpt-4",
                     messages=[
-                        {"role": "system", "content": f"You are an AI trained to provide detailed and accurate {modality} information about companies."},
                         {"role": "user", "content": user_prompt}
                     ],
-                    max_tokens=1500,
+                    max_tokens=max_seq_len, 
                     n=1,
                     stop=None,
                     temperature=0,
@@ -77,8 +75,8 @@ def generate_gpt4_response(
             final_response = response['choices'][0]['message']['content']
             return final_response.strip()
         
-        elif modality == "llama-2-7b":
-            setup(0, 1)  # initialize the process group with rank=0, world_size=1
+        elif modality == "codellama-7b":
+            # setup(0, 1)  # initialize the process group with rank=0, world_size=1
             generator = Llama.build(
                 ckpt_dir=ckpt_dir,
                 tokenizer_path=tokenizer_path,

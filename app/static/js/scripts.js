@@ -84,7 +84,7 @@ document.addEventListener('DOMContentLoaded', function () {
             const result = await fetchData(prompt, modality);
 
             if (result.success) {
-                displayResult(`<h3>Model: ${modality}</h3><h5 class="text-lightgrey">Company: ${prompt}</h5><pre class="text-white">${result.response}</pre>`);
+                displayResult(`<h3>Model: ${modality}</h3><h5 class="text-lightgrey">Prompt: ${prompt}</h5><pre class="text-white">${result.response}</pre>`);
             } else {
                 displayError(result.error, resultElement);
             }
