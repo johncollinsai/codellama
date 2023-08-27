@@ -7,6 +7,7 @@ import openai
 import fire
 import torch
 import traceback
+import subprocess
 import torch.multiprocessing as mp
 from torch.nn.parallel import DistributedDataParallel as DDP
 from .validatecode import validate_code
@@ -26,8 +27,19 @@ def print_gpu_memory():
     print(f"GPU Memory Reserved: {torch.cuda.memory_reserved() / 1024 ** 2:.2f} MiB")
 
 def free_gpu_memory():
-    torch.cuda.empty_cache()  # PyTorch method to free up GPU memory
-    gc.collect()  # Python's built-in garbage collector to free up CPU memory
+    torch.cuda.empty_cache()  
+    gc.collect()  
+
+def monitor_gpu_stats():
+    cmd = [
+        "nvidia-smi",
+        "--query-gpu=timestamp,name,utilization.gpu,utilization.memory,memory.total,memory.free,memory.used",
+        "--format=csv",
+        "-l", 
+        "1"
+    ]
+    with open("gpu_stats.csv", "w") as f:
+        subprocess.Popen(cmd, stdout=f)
 
 def setup(rank, world_size):
     os.environ['MASTER_ADDR'] = 'localhost'
@@ -45,7 +57,7 @@ def generate_gpt4_response(
         api_key, 
         ckpt_dir, 
         tokenizer_path, 
-        max_seq_len=1500, # max length of the input sequence
+        max_seq_len=256, # max length of the input sequence
         max_gen_len=None, # Optional
         max_batch_size=4, 
         temperature=0, # 0 implies models will always pick the most likely next word, ignoring top_p re llama-2, aligns with gpt-4
@@ -54,6 +66,8 @@ def generate_gpt4_response(
     try:
         print("Prompt: ", prompt)   # print prompt
         print("Modality: ", modality)   # print api key
+
+        monitor_gpu_stats()
 
         is_valid = validate_code(prompt, modality, api_key, max_seq_len)
         
