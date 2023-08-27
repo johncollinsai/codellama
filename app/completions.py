@@ -2,9 +2,11 @@ import requests
 import traceback
 import os
 import re
+import gc 
 import openai
 import fire
 import torch
+import traceback
 import torch.multiprocessing as mp
 from torch.nn.parallel import DistributedDataParallel as DDP
 from .validatecode import validate_code
@@ -17,6 +19,15 @@ def get_api_key():
     return api_key
 
 api_key = get_api_key()
+
+def print_gpu_memory():
+    """Utility function to print GPU memory usage."""
+    print(f"GPU Memory Allocated: {torch.cuda.memory_allocated() / 1024 ** 2:.2f} MiB")
+    print(f"GPU Memory Reserved: {torch.cuda.memory_reserved() / 1024 ** 2:.2f} MiB")
+
+def free_gpu_memory():
+    torch.cuda.empty_cache()  # PyTorch method to free up GPU memory
+    gc.collect()  # Python's built-in garbage collector to free up CPU memory
 
 def setup(rank, world_size):
     os.environ['MASTER_ADDR'] = 'localhost'
@@ -76,14 +87,27 @@ def generate_gpt4_response(
             return final_response.strip()
         
         elif modality == "codellama-7b":
-            # setup(0, 1)  # initialize the process group with rank=0, world_size=1
+            print("Before setup:")
+            print_gpu_memory()  # Debugging statement
+            free_gpu_memory()  # Free GPU memory before running the codellama model
+
+            setup(0, 1)  # initialize the process group with rank=0, world_size=1
+
+            print("After setup, before model build:")
+            print_gpu_memory()  # Debugging statement
+
             generator = Llama.build(
                 ckpt_dir=ckpt_dir,
                 tokenizer_path=tokenizer_path,
                 max_seq_len=max_seq_len,
                 max_batch_size=max_batch_size,
             )
+
+            print("After model build, before text generation:")
+            print_gpu_memory()  # Debugging statement
+
             prompts = [user_prompt_llama]
+
             try:
                 results = generator.text_completion(
                     prompts,
@@ -91,6 +115,10 @@ def generate_gpt4_response(
                     temperature=temperature,
                     top_p=top_p,
                 )
+
+                print("After text generation:")
+                print_gpu_memory()  # Debugging statement
+
                 for result in results:
                     print(f"{modality} response:")
                     print(f"> {result['generation']}")
@@ -102,7 +130,13 @@ def generate_gpt4_response(
                 return str(e)
 
             finally:
+                print("Before cleanup:")
+                print_gpu_memory()  # Debugging statement
+
                 cleanup()  # cleanup the process group
+
+                print("After cleanup:")
+                print_gpu_memory()  # Debugging statement
 
     # part of try/except block, here the except block catches error and prints it to the terminal
     except Exception as e:
