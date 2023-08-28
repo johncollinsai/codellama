@@ -92,7 +92,6 @@ def generate_gpt4_response(
                     temperature=0,
                 )
 
-            # Create the chat completion
             response = create_chat_completion()
 
             print(modality, " response:", response)  # print statements to see the values of variables and the response from the GPT-4 API
@@ -102,13 +101,14 @@ def generate_gpt4_response(
         
         elif modality == "codellama-7b":
             print("Before setup:")
-            print_gpu_memory()  # Debugging statement
-            free_gpu_memory()  # Free GPU memory before running the codellama model
+            print(torch.cuda.is_available())
+            print_gpu_memory()  
+            free_gpu_memory()  
 
             setup(0, 1)  # initialize the process group with rank=0, world_size=1
 
             print("After setup, before model build:")
-            print_gpu_memory()  # Debugging statement
+            print_gpu_memory()  
 
             generator = Llama.build(
                 ckpt_dir=ckpt_dir,
@@ -118,7 +118,7 @@ def generate_gpt4_response(
             )
 
             print("After model build, before text generation:")
-            print_gpu_memory()  # Debugging statement
+            print_gpu_memory()  
 
             prompts = [user_prompt_llama]
 
@@ -131,7 +131,7 @@ def generate_gpt4_response(
                 )
 
                 print("After text generation:")
-                print_gpu_memory()  # Debugging statement
+                print_gpu_memory() 
 
                 for result in results:
                     print(f"{modality} response:")
@@ -145,12 +145,12 @@ def generate_gpt4_response(
 
             finally:
                 print("Before cleanup:")
-                print_gpu_memory()  # Debugging statement
+                print_gpu_memory() 
 
                 cleanup()  # cleanup the process group
 
                 print("After cleanup:")
-                print_gpu_memory()  # Debugging statement
+                print_gpu_memory()  
 
     # part of try/except block, here the except block catches error and prints it to the terminal
     except Exception as e:

@@ -27,10 +27,5 @@ Please describe this code {prompt}. Please check and comment upon the following 
 
 # codellama-7b
 USER_PROMPT_LLAMA = """
-Please describe this code {prompt}. Please check and comment upon the following where appropriate to do so, with regard to {prompt}:
-What would you change about this code?
-What would you add to this code?
-What would you remove from this code?
-What would you refactor in this code?
-Provide examples of how you would refactor this code.    
+Please describe this code {prompt}. 
 """
