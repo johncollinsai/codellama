@@ -9,7 +9,6 @@ import torch
 import traceback
 import subprocess
 import torch.multiprocessing as mp
-from typing import Optional
 from torch.nn.parallel import DistributedDataParallel as DDP
 from .validatecode import validate_code
 from .prompts import USER_PROMPT, USER_PROMPT_LLAMA
@@ -59,7 +58,7 @@ def generate_gpt4_response(
         ckpt_dir, 
         tokenizer_path, 
         max_seq_len=256, # max length of the input sequence
-        max_gen_len: Optional[int] = None,
+        max_gen_len=None, # Optional
         max_batch_size=4, 
         temperature=0, # 0 implies models will always pick the most likely next word, ignoring top_p re llama-2, aligns with gpt-4
         top_p=0.9 # overridden here by temperature=0, aligns with gpt-4
@@ -121,7 +120,21 @@ def generate_gpt4_response(
             print("After model build, before text generation:")
             print_gpu_memory()  
 
-            prompts = [user_prompt_llama]
+            prompts = [
+        # For these prompts, the expected answer is the natural continuation of the prompt
+        """\
+import socket
+
+def ping_exponential_backoff(host: str):""",
+        """\
+import argparse
+
+def main(string: str):
+    print(string)
+    print(string[::-1])
+
+if __name__ == "__main__":"""
+            ]
 
             try:
                 results = generator.text_completion(
@@ -130,14 +143,10 @@ def generate_gpt4_response(
                     temperature=temperature,
                     top_p=top_p,
                 )
-
-                print("After text generation:")
-                print_gpu_memory() 
-
-                for result in results:
-                    print(f"{modality} response:")
+                for prompt, result in zip(prompts, results):
+                    print(prompt)
                     print(f"> {result['generation']}")
-                return results[0]['generation'].strip()
+                    print("\n==================================\n")
 
             except Exception as e:
                 print(f"An error of type {type(e).__name__} occurred during the generation: {str(e)}")
