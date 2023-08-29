@@ -85,7 +85,7 @@ def generate_gpt4_response(
                 return openai.ChatCompletion.create(
                     model="gpt-4",
                     messages=[
-                        {"role": "system", "content": user_prompt}
+                        {"role": "user", "content": user_prompt}
                     ],
                     max_tokens=max_seq_len, 
                     n=1,
@@ -121,19 +121,7 @@ def generate_gpt4_response(
             print("After model build, before text generation:")
             print_gpu_memory()  
 
-            # prompts = [user_prompt_llama]
-
-            prompts = [
-                f"""import socket
-            def ping_exponential_backoff(host: str):
-            {user_prompt_llama}""",
-                f"""import argparse
-            def main(string: str):
-                print(string)
-                print(string[::-1])
-            if __name__ == '__main__':
-            {user_prompt_llama}"""
-            ]
+            prompts = [user_prompt_llama]
 
             try:
                 results = generator.text_completion(
@@ -147,9 +135,8 @@ def generate_gpt4_response(
                 print_gpu_memory() 
 
                 for result in results:
-                    print(f"Response:")
+                    print(f"{modality} response:")
                     print(f"> {result['generation']}")
-                
                 return results[0]['generation'].strip()
 
             except Exception as e:
