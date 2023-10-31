@@ -79,3 +79,6 @@ USER_PROMPT_LLAMA = """
 - [Flask Documentation](https://flask.palletsprojects.com/en/2.1.x/)
 
 For further insights and extended analysis, please refer to my website [johncollins.ai](https://johncollins.ai).
+
+### License
+codellama is released under the MIT License.
