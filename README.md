@@ -1,6 +1,6 @@
 # codellama
 
-![Code Llama Project](neon-llama-2.png)
+![Code Llama Project](llama.png)
 
 ## Project Objective:
 The prime focus of my codellama project is to fine-tune the Code Llama 7B model and juxtapose its performance with GPT-4. Utilizing the stack outlined below, I dive into an extensive analysis, providing a robust framework for further work with the Code Llama model.
